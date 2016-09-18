@@ -3,7 +3,7 @@
 Task: Raj once wanted to code a program to make a plus sign using the numbers but he didn't have any idea to do so. Using 'n' as a parameter in the function pattern complete the code and solve the pattern so that Raj fells happy.
 
 
-console output version
+
 
 */
 
@@ -13,6 +13,8 @@ function pattern(n) {
   var whSp = " ";
   var repWhSp;
   var seqArr = [];
+  var patArr = [];
+  var out;
   var theSeq;
 
   function retSeq(int) {
@@ -25,26 +27,32 @@ function pattern(n) {
       }
     }
   } //end retSeq
-  
-function repWp(li){
-var val = li;
-var ar = Array(val).join(" ");
-return ar;
-}//end repWp
+
+  function repWp(li) {
+    var val = li;
+    var ar = Array(val).join(" ");
+    return ar;
+  } //end repWp
 
   retSeq(limit);
   theSeq = seqArr.join("");
   repWhSp = repWp(limit);
 
+
+
   for (var i = 1; i <= verLim; i++) {
     if (i == limit) {
-      console.log(theSeq);
+      patArr.push((theSeq) + "\n");
+     
     } else if (i <= limit) {
-      console.log(repWhSp + i)
+      patArr.push((repWhSp + i) + "\n");
+
     } else {
-      console.log(repWhSp + (((i - n) - n) * -1));
+      patArr.push((repWhSp + (((i - n) - n) * -1)) + "\n");
     }
   } //end for 
+  out = patArr.join("");
+  console.log(out);
 }
 
-pattern(3);
+pattern(8);
