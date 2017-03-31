@@ -1,25 +1,44 @@
-function bruteForceDetected(loginRequest)
-{
-var loginAttempt = {};
-loginAttempt.sourceIP = loginRequest.sourceIP;
-loginAttempt.successful = loginRequest.successful;
+function bruteForceDetected(loginRequest) {
+    var ipExist;
+    var theIP = loginRequest.sourceIP;
+    var success = loginRequest.attempt;
+    if (typeof counter === 'undefined') {
+        var counter;
+    }
+    if (success === false) {
+        if (typeof ipDB === 'undefinded') {
+            var ipDB = [];
+            theIP.push(ipDB)
+        } else {
+            ipExist = ipDB.includes(theIP);
+            if (ipExist === true) {
+                counter++;
 
-if(var theAr == "undefined"){
-var theAr = [];
-}else{
-var theIP = loginAttempt.sourceIP; 
-
+            } else {
+                counter = 0;
+                ipDB = [];
+                theIP.push(ipDB);
+            }
+        }
+    } else {
+        return true
+    }
+    if (counter => 20) {
+        return false
+    }
 }
-}
+// You are tasked with protecting an important application against hackers.
 
-ok this cant be done without storage, so check to see if array var is created, if not then create and empty array,
-if it already exist then store the ip, and a loss counter in and object and push that object to an array 
+// The first defense you have to implement is brute force protection.
 
-when the function runs,
-check to see if array of objects exist
-if doesnt exist then create empty array
-if it does exist then check the ip against the array of objects
-if it doesnt show up then create new object of array and loss count at 0 
-if it shows up then check its loss count
-if its loss count is below 20 add to its loss count
-if loss count is equal to or more than 20 then block (returning false)
+// Some inexperienced (or lazy) hackers may try to break in by simply guessing the admin password over and over again.
+
+// Design a function which will block a login attempt if it comes from an IP address which failed to login 20 times in a row.
+
+// The function will receive a single parameter - an object containing two properties:
+
+// loginAttempt.sourceIP // the IP of the person trying to log in
+// loginAttempt.successful // whether the log-in attempt succeeded
+// The bruteForceDetected function should return true when the IP should be blocked and false otherwise.
+
+// Note: A successful login should reset the number of counts.
