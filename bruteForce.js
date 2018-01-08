@@ -9,59 +9,54 @@
 // Note: A successful login should reset the number of counts.
 
 
-//Switch to see if the IP is a repeat
-var isRepeated = false;
-//A counter to keep track of tries
-var counter = 0;
-//A place to store the previous IP to compare against
-var ipStore = 0;
-
+var ipStore = [];
+var limit = 19;
 
 function bruteForceDetected(loginRequest) {
-    var prevIP = ipStore;
-    console.log("prevIP-->",prevIP);
-    console.log(loginRequest);
 
-    //If the attempt failed..
-    if ((loginRequest.successful === false) && (counter <= 17)){
-        //..get the previous IP
-
-
-        //Check request IP against the previous IP,
-        // if the same...
-        if (loginRequest.sourceIP === prevIP) {
-            //Set repeat switch to true
-            isRepeated = true;
-            //increment counter
-            counter++;
-            //Display counter
-            console.log("Repeat IP detected, failed attempt count:", counter);
-            //Update previous IP storage
-            ipStore = loginRequest.sourceIP;
+    if (loginRequest.successful === true) {
+        if (ipStore.length > 1) {
+            function whichOne(i) {
+                return loginRequest.sourceIP === i.theIP;
+            }
+            var theMatchedEntry = ipStore.find(whichOne);
+            theMatchedEntry.theCount = 0;
+        }
+        return false
+    } else {
+        if (ipStore.length < 1) {
+            var ipEntry = {
+                "theIP": loginRequest.sourceIP,
+                "theCount": 1
+            };
+            ipStore.push(ipEntry);
             return false
         } else {
-            //If different
-            console.log("New IP Detected");
-            counter = 0;
-            ipStore = loginRequest.sourceIP;
-            return false
+            function doesMatch(i) {
+                return loginRequest.sourceIP === i.theIP;
+            }
+
+            if (ipStore.some(doesMatch) === true) {
+                function whichOne(i) {
+                    return loginRequest.sourceIP === i.theIP;
+                }
+
+                var theMatchedEntry = ipStore.find(whichOne);
+                if (theMatchedEntry.theCount >= limit) {
+                    return true;
+                } else {
+                    theMatchedEntry.theCount++;
+
+                    return false;
+                }
+            } else {
+                var ipEntry = {
+                    "theIP": loginRequest.sourceIP,
+                    "theCount": 1
+                };
+                ipStore.push(ipEntry);
+                return false;
+            }
         }
-    } else if(loginRequest.successful === true) {
-        console.log("IP login success");
-        counter = 0;
-        ipStore = loginRequest.sourceIP;
-        return false
-    }else{
-        console.log("prevIP-->",prevIP);
-        console.log("BRUTE FORCE DETECTED");
-        counter = 0;
-        ipStore = loginRequest.sourceIP;
-        return true
     }
 }
-
-
-
-
-
-//this passes almost everything but I need to add a object that keeps track of IPS and how many attempts per then determines if that IP is bad instead of looking at previous
